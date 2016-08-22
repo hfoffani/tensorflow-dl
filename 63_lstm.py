@@ -266,13 +266,16 @@ def random_distribution():
 # In[24]:
 
 from tensorflow.python.framework import ops
-ops.reset_default_graph()
+#ops.reset_default_graph()
 
 num_nodes = 64
 
+#graph = tf.Graph()
+#with graph.as_default():
+#with tf.device("/cpu:0"):
 graph = tf.Graph()
 with graph.as_default():
-  
+
     # Parameters:
     ifcox = tf.Variable(tf.truncated_normal([vocabulary_size**2, 4*num_nodes], -0.1, 0.1))
     ifcom = tf.Variable(tf.truncated_normal([num_nodes, 4*num_nodes], -0.1, 0.1))
@@ -340,11 +343,11 @@ with graph.as_default():
     # Optimizer.
     global_step = tf.Variable(0)
     learning_rate = tf.train.exponential_decay(
-       1.0, global_step, 200000, 0.5, staircase=True)
-    # optimizer = tf.train.GradientDescentOptimizer(learning_rate)
-    # momemtum = 0.9
+       10.0, global_step, 2000, 0.5, staircase=True)
+    optimizer = tf.train.GradientDescentOptimizer(learning_rate)
+    momentum = tf.Variable(0.9)
     # optimizer = tf.train.MomentumOptimizer(learning_rate, momentum)
-    optimizer = tf.train.AdagradOptimizer(learning_rate)
+    # optimizer = tf.train.AdagradOptimizer(learning_rate)
     gradients, v = zip(*optimizer.compute_gradients(loss))
     gradients, _ = tf.clip_by_global_norm(gradients, 1.25)
     optimizer = optimizer.apply_gradients(
@@ -373,11 +376,13 @@ with graph.as_default():
 
 # In[25]:
 
-num_steps = 10001
-summary_frequency = 100
+num_steps = 20001
+summary_frequency = 200
 dropout_keep_prob = 0.5
 
-with tf.Session(graph=graph) as session:
+config = tf.ConfigProto(allow_soft_placement=True, log_device_placement=False)
+with tf.Session(graph=graph, config=config) as session:
+#with tf.Session() as session:
     tf.initialize_all_variables().run()
     print('Initialized')
     mean_loss = 0
