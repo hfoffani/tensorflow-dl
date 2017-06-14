@@ -3,7 +3,33 @@
 # Deep Learning Examples in Tensorflow.
 
 
-This repo contains a handful of Jupyter notebooks.
+This repo contains a handful of Deep Learning examples written in Python Jupyter notebooks.
+
+
+### Directory
+
+ - `1_notmnist.ipynb`
+    Processes MNIST data.
+ - `2_fullyconnected.ipynb`
+    Uses a fully connected layer for prediction.
+ - `3_regularization.ipynb`
+    Adds regularization.
+ - `4_convolutions.ipynb`
+    Implements Convoluational Network.
+ - `5_word2vec.ipynb`
+    Implement Word2Vec.
+ - `6_lstm.ipynb`
+    Basic LSTM network.
+ - `62a_lstm.ipynb`
+    An LSTM network.
+ - `62b_lstm.ipynb`
+    An enhanced LSTM.
+ - `63_lstm.ipynb`
+    Another LSTM.
+ - `6_translate.ipynb`
+    A NN translator.
+
+There are other notebooks as well.
 
 
 ### Installation.
