@@ -39,7 +39,7 @@ def maybe_download(filename, expected_bytes):
         print('Found and verified %s' % filename)
     else:
         print(statinfo.st_size)
-        raise Exception(
+        raise ValueError(
             'Failed to verify ' + filename + '. Can you get to it with a browser?')
     return filename
 
