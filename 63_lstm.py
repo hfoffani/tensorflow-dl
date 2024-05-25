@@ -270,8 +270,6 @@ from tensorflow.python.framework import ops
 num_nodes = 64
 
 #graph = tf.Graph()
-#with graph.as_default():
-#with tf.device("/cpu:0"):
 graph = tf.Graph()
 with graph.as_default():
 
@@ -294,10 +292,10 @@ with graph.as_default():
         Note that in this formulation, we omit the various connections between the
         previous state and the gates."""
         
-        # ORIGINAL
-        # all_gates_state = tf.matmul(i, ifcox) + tf.matmul(o, ifcom) + ifcob
+        # ORIGINAL CODE
+        # was all-gates-state EQ tf.matmul(i, ifcox) + tf.matmul(o, ifcom) + ifcob
         # lookup instead of matmul. they are equivalent in this context.
-        # all_gates_state = tf.nn.embedding_lookup(ifcox, i) + tf.matmul(o, ifcom) + ifcob
+        # was all-gates-state EQ tf.nn.embedding_lookup(ifcox, i) + tf.matmul(o, ifcom) + ifcob
 
         ifcoxdemb = tf.nn.embedding_lookup(ifcox, i)
         ifcoxd = tf.nn.dropout(ifcoxdemb, 1.0)
@@ -335,7 +333,6 @@ with graph.as_default():
         logits = tf.nn.xw_plus_b(tf.concat(0, outputs), w, b)
         # use of sparse_softmax because it accepts int64s
         sofmacs = tf.nn.sparse_softmax_cross_entropy_with_logits(logits, tf.concat(0, train_labels))
-        # sofmacs = tf.nn.softmax_cross_entropy_with_logits(logits, tf.concat(0, train_labels))
         loss = tf.reduce_mean(sofmacs)
 
 
@@ -345,8 +342,8 @@ with graph.as_default():
        10.0, global_step, 2000, 0.5, staircase=True)
     optimizer = tf.train.GradientDescentOptimizer(learning_rate)
     momentum = tf.Variable(0.9)
-    # optimizer = tf.train.MomentumOptimizer(learning_rate, momentum)
-    # optimizer = tf.train.AdagradOptimizer(learning_rate)
+    # other optimizers like tf.train.MomentumOptimizer(learning_rate, momentum)
+    # other optimizer like tf.train.AdagradOptimizer(learning_rate)
     gradients, v = zip(*optimizer.compute_gradients(loss))
     gradients, _ = tf.clip_by_global_norm(gradients, 1.25)
     optimizer = optimizer.apply_gradients(
@@ -359,7 +356,6 @@ with graph.as_default():
     
     # idem as train_data
     sample_input = tf.placeholder(tf.int64, shape = [1])    
-    # sample_input = tf.placeholder(tf.float32, shape=[1, vocabulary_size])
     
     saved_sample_output = tf.Variable(tf.zeros([1, num_nodes]))
     saved_sample_state = tf.Variable(tf.zeros([1, num_nodes]))
@@ -381,7 +377,6 @@ dropout_keep_prob = 0.5
 
 config = tf.ConfigProto(allow_soft_placement=True, log_device_placement=False)
 with tf.Session(graph=graph, config=config) as session:
-#with tf.Session() as session:
     tf.initialize_all_variables().run()
     print('Initialized')
     mean_loss = 0
