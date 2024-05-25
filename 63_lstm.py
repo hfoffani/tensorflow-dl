@@ -160,7 +160,6 @@ def builddictbigram():
     return d
 
 dictbigram = builddictbigram()
-# print(dictbigram)
 
 def ids2bigrams(l0, l1):
     return np.array( [ dictbigram[x0, x1] for x0, x1 in zip(l0, l1) ] )
@@ -211,7 +210,7 @@ def sample(prediction):
 
 def random_distribution():
     """Generate a random column of probabilities."""
-    b = np.random.generator.uniform(0.0, 1.0, size=[1, vocabulary_size])
+    b = np.random.Generator.uniform(0.0, 1.0, size=[1, vocabulary_size])
     return b/np.sum(b, 1)[:,None]
 
 
@@ -390,16 +389,11 @@ with tf.Session(graph=graph, config=config) as session:
         batches = train_batches.next()
         # transform input into IDs
         batchesIDs = batches2IDs( batches )
-        # print(batchesIDs[0])
-        # print(batchesIDs[1])
-        # print(batchesIDs[2])
-        # print(ids2bigrams(batchesIDs[0],batchesIDs[1]))
         feed_dict = dict()
         for i in range(num_unrollings):
             feed_dict[train_inputs[i]] = ids2bigrams(batchesIDs[i], batchesIDs[i+1])
             feed_dict[train_labels[i]] = batchesIDs[i+2]
         feed_dict[keep_prob] = dropout_keep_prob
-        # print(feed_dict)
         _, l, predictions, lr = session.run(
             [optimizer, loss, train_prediction, learning_rate], feed_dict=feed_dict)
         mean_loss += l
