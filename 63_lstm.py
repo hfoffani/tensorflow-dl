@@ -115,7 +115,7 @@ class BatchGenerator(object):
   
     def _next_batch(self):
         """Generate a single batch from the current cursor position in the data."""
-        batch = np.zeros(shape=(self._batch_size, vocabulary_size), dtype=np.float)
+        batch = np.zeros(shape=(self._batch_size, vocabulary_size), dtype=float)
         for b in range(self._batch_size):
             batch[b, char2id(self._text[self._cursor[b]])] = 1.0
             self._cursor[b] = (self._cursor[b] + 1) % self._text_size
@@ -126,7 +126,7 @@ class BatchGenerator(object):
         the last batch of the previous array, followed by num_unrollings new ones.
         """
         batches = [self._last_batch]
-        for step in range(self._num_unrollings):
+        for _ in range(self._num_unrollings):
             batches.append(self._next_batch())
         self._last_batch = batches[-1]
         return batches
@@ -205,13 +205,13 @@ def sample_distribution(distribution):
 
 def sample(prediction):
     """Turn a (column) prediction into 1-hot encoded samples."""
-    p = np.zeros(shape=[1, vocabulary_size], dtype=np.float)
+    p = np.zeros(shape=[1, vocabulary_size], dtype=float)
     p[0, sample_distribution(prediction[0])] = 1.0
     return p
 
 def random_distribution():
     """Generate a random column of probabilities."""
-    b = np.random.uniform(0.0, 1.0, size=[1, vocabulary_size])
+    b = np.random.generator.uniform(0.0, 1.0, size=[1, vocabulary_size])
     return b/np.sum(b, 1)[:,None]
 
 
