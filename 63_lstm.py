@@ -269,7 +269,6 @@ from tensorflow.python.framework import ops
 
 num_nodes = 64
 
-#graph = tf.Graph()
 graph = tf.Graph()
 with graph.as_default():
 
