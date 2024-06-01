@@ -210,7 +210,7 @@ def sample(prediction):
 
 def random_distribution():
     """Generate a random column of probabilities."""
-    b = np.random.Generator.uniform(0.0, 1.0, size=[1, vocabulary_size])
+    b = np.random.default_rng().uniform(0.0, 1.0, size=[1, vocabulary_size])
     return b/np.sum(b, 1)[:,None]
 
 
